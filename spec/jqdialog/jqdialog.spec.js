@@ -13,12 +13,10 @@ describe("jQuery Dialog Directive", function() {
             injector = $injector;
 
             $rootScope.onOk = jasmine.createSpy();
-            $rootScope.onOpen = jasmine.createSpy();
-            $rootScope.onClose = jasmine.createSpy();
 
             element = $compile('<jqdialog dialog-name="Test" title="\'Test Dialog\'" ' +
                 'buttons="{\'OK\': onOk}" button-classes="{\'OK\': \'test-button\'}"' +
-                ' on-open="onOpen()" on-close="onClose()"></jqdialog>')($rootScope);
+                ' on-open="onOpen" on-close="onClose"></jqdialog>')($rootScope);
             angular.element(document.body).append(element);
         });
     });
@@ -48,6 +46,8 @@ describe("jQuery Dialog Directive", function() {
         beforeEach(function() {
             original = $.fn.dialog;
             $.fn.dialog = jasmine.createSpy();
+            $rootScope.onOpen = jasmine.createSpy();
+            $rootScope.onClose = jasmine.createSpy();
             service = injector.get('TestDialogService');
         });
 
@@ -63,9 +63,9 @@ describe("jQuery Dialog Directive", function() {
         });
 
         it("should open the dialog on open", function() {
-            service.openDialog();
+            service.openDialog('test');
             expect($.fn.dialog).toHaveBeenCalledWith('open');
-            expect($rootScope.onOpen).toHaveBeenCalled();
+            expect($rootScope.onOpen).toHaveBeenCalledWith('test');
         });
 
         it("should close the dialog on close", function() {
@@ -75,7 +75,7 @@ describe("jQuery Dialog Directive", function() {
 
             service.closeDialog(data);
             expect($.fn.dialog).toHaveBeenCalledWith('close');
-            expect($rootScope.onClose).toHaveBeenCalled();
+            expect($rootScope.onClose).toHaveBeenCalledWith(data);
 
             dfd.then(function(result) {
                 expect(result).toEqual(data);

@@ -21,6 +21,19 @@ module.exports = function(grunt) {
         ]
       }
     },
+    concat: {
+      options: {
+        stripBanners: true,
+        banner: '/*! <%= pkg.repository.url %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+      },
+      build: {
+        src: [
+          'src/module.js',
+          'src/jqdialog/jqdialog.js'
+        ],
+        dest: 'dist/angular.jquery.js'
+      }
+    },
     uglify: {
       options: {
         banner: '/*! <%= pkg.repository.url %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
@@ -37,9 +50,10 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('test', ['jshint', 'jasmine']);
-  grunt.registerTask('default', ['jshint', 'jasmine', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'jasmine', 'concat', 'uglify']);
 
 };

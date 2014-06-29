@@ -19,5 +19,5 @@ Attributes:
 
 Service methods:
 
-- openDialog: calls onOpen if available, then opens the dialog and returns a Promise
+- openDialog(options): calls onOpen if available, then opens the dialog and returns a Promise
 - closeDialog(data): close the dialog and resolves the Promise with the data
