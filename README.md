@@ -19,5 +19,11 @@ Attributes:
 
 Service methods:
 
+- isOpen: calls isOpen method on the dialog
+- moveToTop: calls moveToTop method on the dialog
+- getOption(option): returns the value of the option
+- setOption(option, value): sets the option to the new value
 - openDialog(options): calls onOpen if available, then opens the dialog and returns a Promise
 - closeDialog(data): close the dialog and resolves the Promise with the data
+
+[Dialog Demo](http://rawgit.com/jurberg/angular.jquery/master/example/example.html)

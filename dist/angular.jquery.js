@@ -1,4 +1,4 @@
-/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-06-29 */
+/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-06-30 */
 angular.module('angular.jquery', []).config(function($provide) {
     'use strict';
     angular.module('angular.jquery').provide = $provide;
@@ -19,93 +19,129 @@ angular.module('angular.jquery', []).config(function($provide) {
  * - all jQuery UI dialog options will be available as scope attributes
  *
  * Service methods:
+ * - isOpen: calls isOpen method on the dialog
+ * - moveToTop: calls moveToTop method on the dialog
+ * - getOption(option): returns the value of the option
+ * - setOption(option, value): sets the option to the new value
  * - openDialog(options): calls onOpen if available, then opens the dialog and returns a Promise
  * - closeDialog(data): close the dialog and resolves the Promise with the data
  */
-angular.module('angular.jquery').directive('jqdialog', ['$injector', function JQueryDialogDirective($injector) {
-    'use strict';
+(function(app) {
 
-    var options = Object.keys($.ui.dialog.prototype.options);
+    function JQueryDialogService($q) {
+        this.q = $q;
+        this.dfd = null;
+        this.dialog = null;
+        this.onOpen = null;
+        this.onClose = null;
+    }
 
-    return {
+    JQueryDialogService.prototype = {
 
-        // add all the options from jquery dialog as parent bindings on the scope
-        // then add in onOpen, onClose and buttonClasses bindings
-        scope: options.reduce(function(acc, val) {
-            acc[val] = "&"; return acc;
-        }, {
-            onOpen: "&",
-            onClose: "&",
-            buttonClasses: "&"
-        }),
+        isOpen: function() {
+            return this.dialog.dialog('isOpen');
+        },
 
-        restrict: 'E',
+        moveToTop: function() {
+            this.dialog.dialog('moveToTop');
+        },
 
-        replace: true,
+        getOption: function(option) {
+            return this.dialog.dialog("option", option);
+        },
 
-        transclude: true,
+        setOption: function(option, value) {
+            this.dialog.dialog("option", option, value);
+        },
 
-        template: '<div style="display:none"></div>',
+        openDialog: function(options) {
+            this.dfd = this.q.defer();
+            if (this.onOpen) {
+                this.onOpen(options);
+            }
+            this.dialog.dialog('open');
+            return this.dfd.promise;
+        },
 
-        compile: function(elem, attrs) {
-
-            // Dynamically create the service in the compile function so it's
-            // available for injection by name
-            angular.module('angular.jquery').provide.service(attrs.dialogName + 'DialogService',
-                ['$q', function($q) { this.q = $q; }]);
-
-            return function(scope, elem, attrs, ctrl, transclude) {
-                var opts = options.reduce(function(acc, val) {
-                        // evaluate any option from the scope if it exists
-                        // and add it to the options array
-                        var value = scope[val] ? scope[val]() : undefined;
-                        if (value !== undefined) {
-                            acc[val] = value;
-                        }
-                        return acc;
-                    }, {}),
-                    dialog = elem.dialog(opts),
-                    buttons = dialog.parent().find('.ui-dialog-buttonset button'),
-                    service = $injector.get(attrs.dialogName + 'DialogService');
-
-                // apply any button classes if needed
-                if (buttons.length > 0 && scope.buttonClasses) {
-                    var buttonClasses = scope.buttonClasses();
-                    if (buttonClasses) {
-                        Object.keys(buttonClasses).forEach(function (key) {
-                            buttons
-                                .find('.ui-button-text:contains("' + key + '")')
-                                .parent()
-                                .addClass(buttonClasses[key]);
-                        });
-                    }
-                }
-
-                service.openDialog = function(options) {
-                    var onOpen = scope.onOpen();
-                    this.dfd = this.q.defer();
-                    if (onOpen) {
-                        onOpen(options);
-                    }
-                    dialog.dialog('open');
-                    return this.dfd.promise;
-                };
-
-                service.closeDialog = function(data) {
-                    var onClose = scope.onClose();
-                    if (onClose) {
-                        onClose(data);
-                    }
-                    dialog.dialog('close');
-                    this.dfd.resolve(data);
-                };
-
-                transclude(scope.$parent, function(clone) {
-                    elem.append(clone);
-                });
-
-            };
+        closeDialog: function(data) {
+            if (this.onClose) {
+                this.onClose(data);
+            }
+            this.dialog.dialog('close');
+            this.dfd.resolve(data);
         }
     };
 
-}]);
+    app.directive('jqdialog', ['$injector', function JQueryDialogDirective($injector) {
+        'use strict';
+
+        var options = Object.keys($.ui.dialog.prototype.options);
+
+        return {
+
+            // add all the options from jquery dialog as parent bindings on the scope
+            // then add in onOpen, onClose and buttonClasses bindings
+            scope: options.reduce(function(acc, val) {
+                acc[val] = "&"; return acc;
+            }, {
+                onOpen: "&",
+                onClose: "&",
+                buttonClasses: "&"
+            }),
+
+            restrict: 'E',
+
+            replace: true,
+
+            transclude: true,
+
+            template: '<div style="display:none"></div>',
+
+            compile: function(elem, attrs) {
+                var serviceName = attrs.dialogName + 'DialogService';
+
+                // Dynamically create the service in the compile function so it's
+                // available for injection by name
+                app.provide.service(serviceName, ['$q', JQueryDialogService]);
+
+                return function(scope, elem, attrs, ctrl, transclude) {
+                    var opts = options.reduce(function(acc, val) {
+                            // evaluate any option from the scope if it exists
+                            // and add it to the options array
+                            var value = scope[val] ? scope[val]() : undefined;
+                            if (value !== undefined) {
+                                acc[val] = value;
+                            }
+                            return acc;
+                        }, {}),
+                        dialog = elem.dialog(opts),
+                        buttons = dialog.parent().find('.ui-dialog-buttonset button'),
+                        service = $injector.get(serviceName);
+
+                    // apply any button classes if needed
+                    if (buttons.length > 0 && scope.buttonClasses) {
+                        var buttonClasses = scope.buttonClasses();
+                        if (buttonClasses) {
+                            Object.keys(buttonClasses).forEach(function (key) {
+                                buttons
+                                    .find('.ui-button-text:contains("' + key + '")')
+                                    .parent()
+                                    .addClass(buttonClasses[key]);
+                            });
+                        }
+                    }
+
+                    service.dialog = dialog;
+                    service.onOpen = scope.onOpen();
+                    service.onClose = scope.onClose();
+
+                    transclude(scope.$parent, function(clone) {
+                        elem.append(clone);
+                    });
+
+                };
+            }
+        };
+
+    }]);
+}(angular.module('angular.jquery')));

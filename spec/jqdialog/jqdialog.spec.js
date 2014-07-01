@@ -13,6 +13,8 @@ describe("jQuery Dialog Directive", function() {
             injector = $injector;
 
             $rootScope.onOk = jasmine.createSpy();
+            $rootScope.onOpen = jasmine.createSpy();
+            $rootScope.onClose = jasmine.createSpy();
 
             element = $compile('<jqdialog dialog-name="Test" title="\'Test Dialog\'" ' +
                 'buttons="{\'OK\': onOk}" button-classes="{\'OK\': \'test-button\'}"' +
@@ -46,8 +48,6 @@ describe("jQuery Dialog Directive", function() {
         beforeEach(function() {
             original = $.fn.dialog;
             $.fn.dialog = jasmine.createSpy();
-            $rootScope.onOpen = jasmine.createSpy();
-            $rootScope.onClose = jasmine.createSpy();
             service = injector.get('TestDialogService');
         });
 
