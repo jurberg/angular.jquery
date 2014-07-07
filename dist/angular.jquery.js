@@ -1,4 +1,4 @@
-/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-06-30 */
+/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-07-07 */
 angular.module('angular.jquery', []).config(function($provide) {
     'use strict';
     angular.module('angular.jquery').provide = $provide;
@@ -55,12 +55,16 @@ angular.module('angular.jquery', []).config(function($provide) {
         },
 
         openDialog: function(options) {
+            var openDfd = null,
+                self = this;
             this.dfd = this.q.defer();
             if (this.onOpen) {
-                this.onOpen(options);
+                openDfd = this.onOpen(options);
             }
-            this.dialog.dialog('open');
-            return this.dfd.promise;
+            return (openDfd || this.q.when()).then(function() {
+                self.dialog.dialog('open');
+                return self.dfd.promise;
+            });
         },
 
         closeDialog: function(data) {

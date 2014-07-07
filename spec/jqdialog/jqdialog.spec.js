@@ -13,7 +13,7 @@ describe("jQuery Dialog Directive", function() {
             injector = $injector;
 
             $rootScope.onOk = jasmine.createSpy();
-            $rootScope.onOpen = jasmine.createSpy();
+            $rootScope.onOpen = jasmine.createSpy().andReturn(null);
             $rootScope.onClose = jasmine.createSpy();
 
             element = $compile('<jqdialog dialog-name="Test" title="\'Test Dialog\'" ' +
@@ -64,6 +64,7 @@ describe("jQuery Dialog Directive", function() {
 
         it("should open the dialog on open", function() {
             service.openDialog('test');
+            $rootScope.$digest();
             expect($.fn.dialog).toHaveBeenCalledWith('open');
             expect($rootScope.onOpen).toHaveBeenCalledWith('test');
         });

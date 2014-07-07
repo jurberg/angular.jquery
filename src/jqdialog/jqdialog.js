@@ -50,12 +50,16 @@
         },
 
         openDialog: function(options) {
+            var openDfd = null,
+                self = this;
             this.dfd = this.q.defer();
             if (this.onOpen) {
-                this.onOpen(options);
+                openDfd = this.onOpen(options);
             }
-            this.dialog.dialog('open');
-            return this.dfd.promise;
+            return (openDfd || this.q.when()).then(function() {
+                self.dialog.dialog('open');
+                return self.dfd.promise;
+            });
         },
 
         closeDialog: function(data) {
