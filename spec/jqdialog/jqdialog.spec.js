@@ -33,7 +33,6 @@ describe("jQuery Dialog Directive", function() {
         expect($.fn.dialog.argsForCall[0][0].buttons.OK).toBeDefined();
 
         $.fn.dialog.argsForCall[0][0].buttons.OK();
-
         expect($rootScope.onOk).toHaveBeenCalled();
     });
 
@@ -43,9 +42,10 @@ describe("jQuery Dialog Directive", function() {
 
     describe("Dialog Service", function() {
 
-        var original, service;
+        var original, service, close;
 
         beforeEach(function() {
+            close = $.fn.dialog.argsForCall[0][0].buttons.Close;
             original = $.fn.dialog;
             $.fn.dialog = jasmine.createSpy();
             service = injector.get('TestDialogService');

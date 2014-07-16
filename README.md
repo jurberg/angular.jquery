@@ -16,7 +16,8 @@ Attributes:
 - on-close: a scope function called when the dialog is closed
 - button-classes: map of {'`button name`': '`class name`'} for any buttons
 - all jQuery UI dialog options will be available as scope attributes
-
+  - buttons: you can pass 'close' as the method for a button and it will close the dialog
+  
 Service methods:
 
 - isOpen: calls isOpen method on the dialog
@@ -25,5 +26,7 @@ Service methods:
 - setOption(option, value): sets the option to the new value
 - openDialog(options): calls onOpen if available, then opens the dialog and returns a Promise
 - closeDialog(data): close the dialog and resolves the Promise with the data
+
+
 
 [Dialog Demo](http://rawgit.com/jurberg/angular.jquery/master/example/example.html)

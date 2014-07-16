@@ -1,4 +1,4 @@
-/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-07-07 */
+/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-07-15 */
 angular.module('angular.jquery', []).config(function($provide) {
     'use strict';
     angular.module('angular.jquery').provide = $provide;
@@ -109,18 +109,25 @@ angular.module('angular.jquery', []).config(function($provide) {
                 app.provide.service(serviceName, ['$q', JQueryDialogService]);
 
                 return function(scope, elem, attrs, ctrl, transclude) {
-                    var opts = options.reduce(function(acc, val) {
+                    var service = $injector.get(serviceName),
+                        opts = options.reduce(function(acc, val) {
                             // evaluate any option from the scope if it exists
                             // and add it to the options array
                             var value = scope[val] ? scope[val]() : undefined;
                             if (value !== undefined) {
                                 acc[val] = value;
+                                if (val === 'buttons') {
+                                    Object.keys(value).forEach(function(buttonName) {
+                                        if (value[buttonName] === 'close') {
+                                            value[buttonName] = service.closeDialog.bind(service);
+                                        }
+                                    });
+                                }
                             }
                             return acc;
                         }, {}),
                         dialog = elem.dialog(opts),
-                        buttons = dialog.parent().find('.ui-dialog-buttonset button'),
-                        service = $injector.get(serviceName);
+                        buttons = dialog.parent().find('.ui-dialog-buttonset button');
 
                     // apply any button classes if needed
                     if (buttons.length > 0 && scope.buttonClasses) {
