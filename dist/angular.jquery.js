@@ -1,8 +1,8 @@
-/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-07-15 */
-angular.module('angular.jquery', []).config(function($provide) {
+/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-07-17 */
+angular.module('angular.jquery', []).config(['$provide', function($provide) {
     'use strict';
     angular.module('angular.jquery').provide = $provide;
-});
+}]);
 
 /**
  * Directive: jqdialog
