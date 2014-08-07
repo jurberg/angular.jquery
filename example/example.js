@@ -7,7 +7,7 @@ function($scope, TestDialogService) {
     'use strict';
 
     $scope.testDialog = function() {
-        TestDialogService.openDialog().then(function(result) {
+        TestDialogService.openDialog({testValue: 'test'}).then(function(result) {
             if (result.ok) {
                 alert('You entered ' + result.name);
             }

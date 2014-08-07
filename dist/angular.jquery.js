@@ -1,4 +1,4 @@
-/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-07-17 */
+/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-08-06 */
 angular.module('angular.jquery', []).config(['$provide', function($provide) {
     'use strict';
     angular.module('angular.jquery').provide = $provide;
@@ -61,6 +61,11 @@ angular.module('angular.jquery', []).config(['$provide', function($provide) {
             if (this.onOpen) {
                 openDfd = this.onOpen(options);
             }
+            if (this.argsToScope === true) {
+                Object.keys(options).forEach(function (key) {
+                    this.scope[key] = options[key];
+                }, this);
+            }
             return (openDfd || this.q.when()).then(function() {
                 self.dialog.dialog('open');
                 return self.dfd.promise;
@@ -90,7 +95,8 @@ angular.module('angular.jquery', []).config(['$provide', function($provide) {
             }, {
                 onOpen: "&",
                 onClose: "&",
-                buttonClasses: "&"
+                buttonClasses: "&",
+                argsToScope: "&"
             }),
 
             restrict: 'E',
@@ -145,6 +151,8 @@ angular.module('angular.jquery', []).config(['$provide', function($provide) {
                     service.dialog = dialog;
                     service.onOpen = scope.onOpen();
                     service.onClose = scope.onClose();
+                    service.scope = scope.$parent;
+                    service.argsToScope = scope.argsToScope();
 
                     transclude(scope.$parent, function(clone) {
                         elem.append(clone);

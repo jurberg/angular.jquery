@@ -56,6 +56,11 @@
             if (this.onOpen) {
                 openDfd = this.onOpen(options);
             }
+            if (this.argsToScope === true) {
+                Object.keys(options).forEach(function (key) {
+                    this.scope[key] = options[key];
+                }, this);
+            }
             return (openDfd || this.q.when()).then(function() {
                 self.dialog.dialog('open');
                 return self.dfd.promise;
@@ -85,7 +90,8 @@
             }, {
                 onOpen: "&",
                 onClose: "&",
-                buttonClasses: "&"
+                buttonClasses: "&",
+                argsToScope: "&"
             }),
 
             restrict: 'E',
@@ -140,6 +146,8 @@
                     service.dialog = dialog;
                     service.onOpen = scope.onOpen();
                     service.onClose = scope.onClose();
+                    service.scope = scope.$parent;
+                    service.argsToScope = scope.argsToScope();
 
                     transclude(scope.$parent, function(clone) {
                         elem.append(clone);

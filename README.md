@@ -15,6 +15,7 @@ Attributes:
 - on-open: a scope function called when the dialog is opened
 - on-close: a scope function called when the dialog is closed
 - button-classes: map of {'`button name`': '`class name`'} for any buttons
+- args-to-scope: true = openDialog arguments will be added to the directive's parent scope
 - all jQuery UI dialog options will be available as scope attributes
   - buttons: you can pass 'close' as the method for a button and it will close the dialog
   
