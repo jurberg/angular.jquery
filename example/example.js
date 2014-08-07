@@ -36,4 +36,8 @@ function($scope, TestDialogService) {
         TestDialogService.closeDialog({ok: false});
     };
 
+    $scope.beforeClose = function() {
+        return confirm('Really close?');
+    };
+
 }]);

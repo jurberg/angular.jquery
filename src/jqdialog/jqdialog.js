@@ -79,7 +79,8 @@
     app.directive('jqdialog', ['$injector', function JQueryDialogDirective($injector) {
         'use strict';
 
-        var options = Object.keys($.ui.dialog.prototype.options);
+        var options = Object.keys($.ui.dialog.prototype.options)
+            .concat(['beforeClose','close','create','drag','dragStart','dragStop','focus','open','resize','resizeStart','resizeStop']);
 
         return {
 
