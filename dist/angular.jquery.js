@@ -1,4 +1,4 @@
-/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-08-06 */
+/*! git://github.com/jurberg/angular.jquery.git 0.1.0 2014-10-26 */
 angular.module('angular.jquery', []).config(['$provide', function($provide) {
     'use strict';
     angular.module('angular.jquery').provide = $provide;

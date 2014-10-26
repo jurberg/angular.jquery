@@ -28,6 +28,15 @@ Service methods:
 - openDialog(options): calls onOpen if available, then opens the dialog and returns a Promise
 - closeDialog(data): close the dialog and resolves the Promise with the data
 
+AngularJS 1.3 Note
+------------------
+The first example had the dialog controller declared on the directive itself.  In Angular 1.3,
+this will cause the following error:
 
+> Error: error:multidir
+> Multiple Directive Resource Contention
+
+To work around this, you will need to create a separate div around the jqdialog declaration.
+The example has been updated to match this.
 
 [Dialog Demo](http://rawgit.com/jurberg/angular.jquery/master/example/example.html)

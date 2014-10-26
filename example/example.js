@@ -28,7 +28,7 @@ function($scope, TestDialogService) {
         $scope.fullName = "";
     };
 
-    $scope.onOk = function() {
+    $scope.$parent.onOk = function() {
         TestDialogService.closeDialog({ok: true, name: $scope.fullName});
     };
 

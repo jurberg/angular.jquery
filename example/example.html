@@ -12,17 +12,18 @@
         <h1>Dialog Test</h1>
         <button ng-click="testDialog();">Open Dialog</button>
 
-        <jqdialog dialog-name="Test" title="'Test Dialog'"
-                  auto-open="false" width="400" height="300"
-                  on-open="onOpen" buttons="{'OK': onOk, 'Cancel': onCancel, 'Close': 'close' }"
-                  args-to-scope="true"
-                  before-close="beforeClose"
-                  ng-controller="DialogCtrl">
-            <h3>This is a test dialog</h3>
-            <label for="fullName">Full Name:</label>
-            <input id="fullName" ng-model="fullName"/><br/>
-            {{ testValue }}
-        </jqdialog>
+        <div ng-controller="DialogCtrl">
+            <jqdialog dialog-name="Test" title="'Test Dialog'"
+                      auto-open="false" width="400" height="300"
+                      on-open="onOpen" buttons="{'OK': onOk, 'Cancel': onCancel, 'Close': 'close' }"
+                      args-to-scope="true"
+                      before-close="beforeClose">
+                <h3>This is a test dialog</h3>
+                <label for="fullName">Full Name:</label>
+                <input id="fullName" ng-model="fullName"/><br/>
+                {{ testValue }}
+            </jqdialog>
+        </div>
 
     </div>
 
